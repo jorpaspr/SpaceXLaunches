@@ -1,3 +1,11 @@
+buildscript {
+    val sqldelightVersion = findProperty("sqldelightVersion")
+
+    dependencies {
+        classpath("com.squareup.sqldelight:gradle-plugin:$sqldelightVersion")
+    }
+}
+
 plugins {
     id("com.android.application").version("7.3.1").apply(false)
     id("com.android.library").version("7.3.1").apply(false)
