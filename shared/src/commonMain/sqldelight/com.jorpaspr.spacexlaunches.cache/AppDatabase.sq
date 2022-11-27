@@ -35,6 +35,6 @@ SELECT * FROM Rocket
 WHERE id = ?;
 
 selectAllLaunchesInfo:
-SELECT Launch.*, Rocket.*
+SELECT Launch.*, Rocket.name, Rocket.type
 FROM Launch
 LEFT JOIN Rocket ON Rocket.id == Launch.rocketId;
