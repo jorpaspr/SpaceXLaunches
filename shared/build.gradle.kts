@@ -77,3 +77,9 @@ android {
         targetSdk = 33
     }
 }
+
+sqldelight {
+    database("AppDatabase") {
+        packageName = "com.jorpaspr.spacexlaunches.cache"
+    }
+}
