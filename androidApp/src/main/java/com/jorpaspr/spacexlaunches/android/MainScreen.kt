@@ -4,13 +4,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
@@ -18,21 +18,30 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.jorpaspr.spacexlaunches.android.livedata.observeAsStateNotNull
 import com.jorpaspr.spacexlaunches.entity.RocketLaunch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun LaunchList(mainViewModel: MainViewModel = viewModel()) {
-    val refreshing by mainViewModel.refreshing.observeAsState()
+fun MainScreen(mainViewModel: MainViewModel = viewModel()) {
+    val loading by mainViewModel.loading.observeAsStateNotNull()
+    val refreshing by mainViewModel.refreshing.observeAsStateNotNull()
     val pullRefreshState =
-        rememberPullRefreshState(refreshing = refreshing!!, onRefresh = mainViewModel::refresh)
-    val launches by mainViewModel.launches.observeAsState()
+        rememberPullRefreshState(refreshing = refreshing, onRefresh = mainViewModel::refresh)
+    val launches by mainViewModel.launches.observeAsStateNotNull()
 
-    Box(Modifier.pullRefresh(pullRefreshState)) {
-        if (!refreshing!!) {
-            LaunchList(launches!!)
+    Box(
+        Modifier
+            .pullRefresh(pullRefreshState)
+            .fillMaxSize()
+    ) {
+        if (!loading && !refreshing) {
+            LaunchList(launches)
         }
-        PullRefreshIndicator(refreshing!!, pullRefreshState, Modifier.align(Alignment.TopCenter))
+        if (loading) {
+            CircularProgressIndicator(Modifier.align(Alignment.Center))
+        }
+        PullRefreshIndicator(refreshing, pullRefreshState, Modifier.align(Alignment.TopCenter))
     }
 }
 
