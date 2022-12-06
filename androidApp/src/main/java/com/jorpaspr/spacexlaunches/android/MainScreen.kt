@@ -23,7 +23,10 @@ import com.jorpaspr.spacexlaunches.entity.RocketLaunch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun MainScreen(mainViewModel: MainViewModel = viewModel()) {
+fun MainScreen(
+    modifier: Modifier = Modifier,
+    mainViewModel: MainViewModel = viewModel()
+) {
     val loading by mainViewModel.loading.observeAsStateNotNull()
     val refreshing by mainViewModel.refreshing.observeAsStateNotNull()
     val pullRefreshState =
@@ -31,7 +34,7 @@ fun MainScreen(mainViewModel: MainViewModel = viewModel()) {
     val launches by mainViewModel.launches.observeAsStateNotNull()
 
     Box(
-        Modifier
+        modifier
             .pullRefresh(pullRefreshState)
             .fillMaxSize()
     ) {
@@ -46,8 +49,14 @@ fun MainScreen(mainViewModel: MainViewModel = viewModel()) {
 }
 
 @Composable
-fun LaunchList(launches: List<RocketLaunch>) {
-    LazyColumn(Modifier.fillMaxSize()) {
+fun LaunchList(
+    launches: List<RocketLaunch>,
+    modifier: Modifier = Modifier
+) {
+    LazyColumn(
+        modifier = modifier.fillMaxSize(),
+        contentPadding = WindowInsets.navigationBars.asPaddingValues()
+    ) {
         items(
             items = launches
         ) { launch ->
@@ -68,36 +77,37 @@ fun LaunchItem(
     missionName: String,
     isSuccess: Boolean?,
     launchYear: String,
-    details: String
+    details: String,
+    modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .fillMaxWidth()
     ) {
-        Column(modifier = Modifier.padding(bottom = 16.dp)) {
+        Column(modifier = modifier.padding(bottom = 16.dp)) {
             Text(
                 text = stringResource(R.string.mission_name_field, missionName),
-                modifier = Modifier
+                modifier = modifier
                     .padding(horizontal = 8.dp)
                     .padding(top = 8.dp)
             )
             Text(
                 text = getLaunchSuccessText(isSuccess),
                 color = getLaunchSuccessColour(isSuccess),
-                modifier = Modifier
+                modifier = modifier
                     .padding(horizontal = 8.dp)
                     .padding(top = 8.dp)
             )
             Text(
                 text = stringResource(R.string.launch_year_field, launchYear),
-                modifier = Modifier
+                modifier = modifier
                     .padding(horizontal = 8.dp)
                     .padding(top = 8.dp)
             )
             Text(
                 text = stringResource(R.string.details_field, details),
-                modifier = Modifier
+                modifier = modifier
                     .padding(horizontal = 8.dp)
                     .padding(top = 8.dp)
             )
